@@ -1,3 +1,5 @@
 Rails Version 4.1.6
 
 This app uses Instagram's API to receive the most current picture on Instagram that has a particular tag.  An ajax call is repeatedly made forming a nearly real time feed or stream of Instagram pictures that match the user inputed tag.
+
+*This project will soon be improved upon and extended*
