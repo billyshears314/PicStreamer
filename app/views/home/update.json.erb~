@@ -1,0 +1,6 @@
+    <% @instagram.each do |instagram| %>
+    {
+      Likes: <%= instagram.likes.count %>,  
+    }
+
+    <% end %>

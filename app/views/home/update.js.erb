@@ -1,0 +1,9 @@
+$('#block').css('background-color', '#00FFFF');
+$('#test').append(<%=@instagram.length%>);
+
+/*
+$('#pic').attr('src', '<%=@instagram[0].images.standard_resolution.url%>');
+*/
+
+
+$('#pic-body').prepend("<a href='<%=@instagram[0].link%>'><img class='pic' src='<%=@instagram[0].images.standard_resolution.url%>'></img></a>");

@@ -1,0 +1,12 @@
+<h1>Pic Streamer</h1>
+
+<input type="textfield" id="searchfield"></input>
+<button id="button">Stream</button>
+
+<div style="margin-top:10px">Streaming pictures with tag: <span id="tagName"></span></div>
+<div id="pic-body" style="margin-top:20px">
+
+</div>
+
+<!--<%= link_to "Update", update_block_path, remote: true %>-->
+
