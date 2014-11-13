@@ -1,28 +1,5 @@
-== README
+Rails Version 4.1.6
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This app uses Instagram's API to receive the most current picture on Instagram that has a particular tag.  An ajax call is repeatedly made forming a nearly real time feed or stream of Instagram pictures that match the user inputed tag.
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+*This project will soon be improved upon and extended*
