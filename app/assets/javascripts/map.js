@@ -53,3 +53,18 @@ function updateLocationInfo(latlng){
      });
 
 };
+
+function setAllMap(map) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+  }
+}
+
+function clearMarkers() {
+  setAllMap(null);
+}
+
+function deleteMarkers() {
+  clearMarkers();
+  markers = [];
+}
