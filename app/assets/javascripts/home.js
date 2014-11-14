@@ -5,98 +5,154 @@ var markers = [];
 var lastData = null;
 var searchValue;
 var initial= true;
+var images = [];
+var currentImage = 0;
+var lastImages = [];
+var preloadImage = new Image();
+
+var totalImages = [];
 
 $(function(){
-$("button").click(function() {  
-	    
-   clearInterval(lastIntervalStream);    	
-  	deleteMarkers();
-	$('#pic-body').html(""); 	
-	searchValue = $('#searchfield').val();
-  	
-   $('#tagName').html(""+searchValue); 	
-	console.log("search value: " + searchValue);   	
 
-		addRecentImage();
-/*  	
+	$('#pauseplay').hide();	
+	
+	$("button").click(function() {
+
+		$('#pauseplay').show();				  
+		  
+		clearInterval(lastIntervalStream);
+		images = [];
+		currentImage = 0;
+		$('#pic-body').html(""); 
+	
+		deleteMarkers();	
+
+		searchValue = $('#searchfield').val();
+		$('#searchfield').val('');		  	
+		
+		$('#searchFor').html('Searching #'+searchValue);
+		  	
+		$('#tagName').html(""+searchValue); 
+		
+		requestImages(nextImage);		
+	 
+	});
+	
+	$('#pauseplay').click(function(){
+		
+				
+		
+	});
+
+});
+
+
+function requestImages(callback){
+
 	$.ajax({
-    url: "/update",
-    type: 'POST',
-    data:  {search: searchValue},
-    success: function(data){
-    	
-    	if(data[0].images.standard_resolution.url!=lastUrl){
-   	 	$('#current-pic').html('<img id="current-pic-image" src=' + data[0].images.standard_resolution.url + '></img>');
-			lastUrl = data[0].images.standard_resolution.url;
+   	url: "/update",
+   	type: 'POST',
+   	data:  {search: searchValue},
+   	success: function(data){	
+    		
+    		for(var i=0; i<data.length; i++){
 
+				if(isNewUrl(data[i].images.standard_resolution.url)){
+
+					if(data[i].location!=null){
+					
+						if(data[i].location.latitude!=null){
+							images.push(data[i]);	
+						}
+						else{
+							console.log("location does not have latitude/longitude");
+						}
+					}    		
+				
+				}
+    			
+    		}
+	
+    		callback();
+    		
+    		lastIntervalStream = setInterval(function(){
+
+				if(currentImage+1 >= images.length){
+						newRequest();					
+					}
+				else{
+					 	nextImage();  
+					}	
+				 
+			}, 3500);
+ 		}
+ 		
+	});
+
+	
+}
+
+function isNewUrl(url){
+
+	for(var i=0; i<lastImages.length; i++){
+	
+		if(lastImages[i].images.standard_resolution.url===url){
+
+			return false;		
+			
+		}	
+		
+	}
+	
+	return true;
+}
+
+function newRequest(){
+	
+	clearInterval(lastIntervalStream);
+	lastImages = images;
+	images = [];
+	currentImage = 0;
+	
+	requestImages(nextImage);
+	
+}
+
+
+function nextImage(){
+	
+		preloadImage.src = ''+images[currentImage].images.standard_resolution.url;
+		
+		preloadImage.width = "350";
+
+	var currentPic = document.getElementById('current-pic');
+
+	currentPic.appendChild(preloadImage);			
+	
+		if(currentImage>0){
+			/*
+			$('#pic-body').prepend("<a href='"+images[currentImage-1].link+"'><img class='pic' src='"+
+			images[currentImage-1].images.standard_resolution.url+"'></img></a>");
+			*/
+			$('#pic-body').prepend("<img class='pic' src='"+
+			images[currentImage-1].images.standard_resolution.url+"'></img>");
+			
+			$('.pic').click(function(){
+				console.log("pic clicked");
+			});			
+			
+			totalImages.push(images[currentImage-1]);
 		}		
 		
-    	},
-   
-    });
-*/
+			$('#latitude').html("Lat: "+images[currentImage].location.latitude);
+			$('#longitude').html("Lon: "+images[currentImage].location.longitude);
 			
-	lastIntervalStream = setInterval(function(){
-		addRecentImage();
-		/*
-		$.ajax({
-    url: "/update",
-    type: 'POST',
-    data: {search: searchValue},
-    success: function(data){
-   	
-		if((data[0].images.standard_resolution.url!=lastUrl)&&(data[0].location!=null)){   
-   
-   		if(lastData!=null){
-    			$('#pic-body').prepend("<a href='"+lastData[0].link+"'><img class='pic' src='"+
-    			lastData[0].images.standard_resolution.url+"'></img></a>");
-    		}
-    		lastData = data;
-			lastUrl = data[0].images.standard_resolution.url;
-
-			$('#current-pic').html('<img id="current-pic-image" src=' + data[0].images.standard_resolution.url + '></img>');
-*/
-
-      
-   
-	}, 3000);
- 
-    
-});
-
-});
-
-function addRecentImage(){
-	
-		$.ajax({
-    url: "/update",
-    type: 'POST',
-    data:  {search: searchValue},
-    success: function(data){
-			console.log(initial);
-    	if(((data[0].images.standard_resolution.url!=lastUrl)||(initial===true))&&(data[0].location!=null)){
-   	 	$('#current-pic').html('<img id="current-pic-image" src=' + data[0].images.standard_resolution.url + '></img>');
-			lastUrl = data[0].images.standard_resolution.url;
-	
-			if(lastData!=null){
-    			$('#pic-body').prepend("<a href='"+lastData[0].link+"'><img class='pic' src='"+
-    			lastData[0].images.standard_resolution.url+"'></img></a>");
-    		}
-    		
-    		lastData = data;
-    		initial = false;
-    			
-    		$('#current-pic').html('<img id="current-pic-image" src=' + data[0].images.standard_resolution.url + '></img>');
-
-			$('#latitude').html("Lat: "+data[0].location.latitude);
-			$('#longitude').html("Lon: "+data[0].location.longitude);
-			
-			var position = {lat: data[0].location.latitude, lng: data[0].location.longitude};		
+			var position = {lat: images[currentImage].location.latitude, lng: images[currentImage].location.longitude};		
 			
 			map.panTo(position);
-			
+
 			//creates red pin image
-			var  pinImage = createPinImage("FE7569");
+			var pinImage = createPinImage("FE7569");
 			
 			//Set old green pic to red now that isn't current
 			if(marker!=null){
@@ -117,14 +173,9 @@ function addRecentImage(){
 			markers.push(marker);
 			marker.setZIndex(100);
 			updateLocationInfo(position);
-			
-			}
 		
-    	}
-   
-    });
-   
-}   
+	 currentImage++;
+}
 
 function createPinImage(color){
 	
@@ -137,5 +188,8 @@ function createPinImage(color){
   	return pinImage;	
 	
 }
+
+
+   
    
    

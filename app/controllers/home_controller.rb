@@ -17,7 +17,7 @@ skip_before_action :verify_authenticity_token
   end
   
   def update
-  	@instagram = Instagram.tag_recent_media(params[:search], {:count =>1})
+  	@instagram = Instagram.tag_recent_media(params[:search], {:count =>33})
   		respond_to do |format|
   			#format.html {redirect_to '/'}
   			#format.js

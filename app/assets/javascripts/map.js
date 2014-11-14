@@ -2,7 +2,7 @@
 
 function initialize() {
   var mapOptions = {
-    center: { lat: -34.397, lng: 150.644},
+    center: { lat: 38.797, lng: -95.35},
     zoom: 4
   };
    map = new google.maps.Map(document.getElementById('map-canvas'),
@@ -13,9 +13,7 @@ function initialize() {
 $(document).ready(function () {
 google.maps.event.addDomListener(window, 'load', initialize);
 
-
 var latlng = new google.maps.LatLng(-34.397, 150.644);
-updateLocationInfo(latlng);
 
 });
 
@@ -39,7 +37,7 @@ function updateLocationInfo(latlng){
                      state=value[count-2];
                      city=value[count-3];
                      //alert("city name is: " + country);
-							$('#location-info').html(city+', '+country);
+							$('#location-info').html(city + ', '+country);
                  }
                  else 
                  {
@@ -49,6 +47,7 @@ function updateLocationInfo(latlng){
           else
          {
 				console.log("FAILED!");
+				$('#location-info').html('');
          }
      });
 
