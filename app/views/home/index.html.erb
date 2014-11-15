@@ -1,47 +1,40 @@
 <center><h1>Pic Streamer</h1></center>
 
-<div id="topbar" style="margin-bottom:20px;margin-left:10px">
-	<input type="textfield" id="searchfield" style="color: #000"></input>
-	<button id="button" style="color: #000">Stream</button>
+<div id="topbar">
+	<input type="textfield" id="searchfield"></input>
+	<button id="button" class="btn btn-default">Stream</button>
 
-	<button id="pauseplay" style="color: #000">Pause</button>
+	<button id="pauseplay" class="btn btn-danger">Stop</button>
 </div>
 
-<!--
-<span style="margin-left:10px">Search for pics with tag: <strong><span id="tagName"></span></strong></span>
--->
-<!--
-<span id="searchFor" style="margin-left:10px">Searching #<strong><span id="tagName"></span></strong></span>
--->
-<span id="searchFor" style="margin-left:10px"></span>
+
 <div class="col-md-12 col-sm-12 col-xs-12">
 
-<div id="map-canvas" class="col-md-6 col-sm-12 col-xs-12">
+	<div class="col-md-6 col-sm-12 col-xs-12">
+
+		<span id="searchFor"></span>
+	
+		<div id="map-canvas">
+
+		</div>
+
+	</div>
+
+	<div class="col-md-6 col-sm-12 col-xs-12">
+
+		<span id="location-info"></span>
+		<a id="current-pic-link">
+			<div id="current-pic">
+	
+			</div>
+		</a>
+	</div>
 
 </div>
 
-<div class="col-md-6 col-sm-12 col-xs-12">
-
-<span id="location-info"></span>
-
-<div id="current-pic">
+<div id="pic-body">
 	
 </div>
-
-</div>
-
-</div>
-
-<div id="pic-body" style="margin-top:40px;margin-left:15px">
-	
-</div>
-
-<!--
-<div id="latitude" style="margin-top:20px"></div>
-
-<div id="longitude" style="margin-top:20px"></div>
-
--->
 
 <!--<%= link_to "Update", update_block_path, remote: true %>-->
 
