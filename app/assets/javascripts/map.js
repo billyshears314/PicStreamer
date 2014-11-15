@@ -11,9 +11,9 @@ function initialize() {
 }
 
 $(document).ready(function () {
-google.maps.event.addDomListener(window, 'load', initialize);
+	google.maps.event.addDomListener(window, 'load', initialize);
 
-var latlng = new google.maps.LatLng(-34.397, 150.644);
+	var latlng = new google.maps.LatLng(-34.397, 150.644);
 
 });
 
@@ -36,7 +36,7 @@ function updateLocationInfo(latlng){
                      country=value[count-1];
                      state=value[count-2];
                      city=value[count-3];
-                     //alert("city name is: " + country);
+                     
 							$('#location-info').html(city + ', '+country);
                  }
                  else 
@@ -66,4 +66,16 @@ function clearMarkers() {
 function deleteMarkers() {
   clearMarkers();
   markers = [];
+}
+
+function createPinImage(color){
+	
+	var pinColor = color;
+ 	var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+ 	new google.maps.Size(21, 34),
+ 	new google.maps.Point(0,0),
+  	new google.maps.Point(10, 34));	
+  	
+  	return pinImage;	
+	
 }

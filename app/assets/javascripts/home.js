@@ -34,7 +34,7 @@ $(function(){
 		  	
 		$('#tagName').html(""+searchValue); 
 		
-		requestImages(nextImage);		
+		requestImages();		
 	 
 	});
 	
@@ -47,7 +47,7 @@ $(function(){
 });
 
 
-function requestImages(callback){
+function requestImages(){
 
 	$.ajax({
    	url: "/update",
@@ -73,8 +73,8 @@ function requestImages(callback){
     			
     		}
 	
-    		callback();
-    		
+			nextImage();		
+    		    		
     		lastIntervalStream = setInterval(function(){
 
 				if(currentImage+1 >= images.length){
@@ -121,60 +121,52 @@ function newRequest(){
 
 function nextImage(){
 	
-		preloadImage.src = ''+images[currentImage].images.standard_resolution.url;
-		
-		preloadImage.width = "350";
+	preloadImage.src = ''+images[currentImage].images.standard_resolution.url;
+	preloadImage.width = "350";
 
 	var currentPic = document.getElementById('current-pic');
-
 	currentPic.appendChild(preloadImage);			
 	
-		if(currentImage>0){
-			/*
-			$('#pic-body').prepend("<a href='"+images[currentImage-1].link+"'><img class='pic' src='"+
-			images[currentImage-1].images.standard_resolution.url+"'></img></a>");
-			*/
-			$('#pic-body').prepend("<img class='pic' src='"+
-			images[currentImage-1].images.standard_resolution.url+"'></img>");
-			
-			$('.pic').click(function(){
-				console.log("pic clicked");
-			});			
-			
-			totalImages.push(images[currentImage-1]);
-		}		
-		
-			$('#latitude').html("Lat: "+images[currentImage].location.latitude);
-			$('#longitude').html("Lon: "+images[currentImage].location.longitude);
-			
-			var position = {lat: images[currentImage].location.latitude, lng: images[currentImage].location.longitude};		
-			
-			map.panTo(position);
+	if(currentImage>0){
 
-			//creates red pin image
-			var pinImage = createPinImage("FE7569");
+		$('#pic-body').prepend("<img class='pic' src='"+
+		images[currentImage-1].images.standard_resolution.url+"'></img>");
 			
-			//Set old green pic to red now that isn't current
-			if(marker!=null){
-				marker.setIcon(pinImage);
-				marker.setZIndex(0);
-			}
+		$('.pic').click(function(){
+			console.log("pic clicked");
+		});			
+			
+		totalImages.push(images[currentImage-1]);
+	}		
+	
+	var position = {lat: images[currentImage].location.latitude, lng: images[currentImage].location.longitude};		
+			
+	map.panTo(position);
+
+	//creates red pin image
+	var pinImage = createPinImage("FE7569");
+			
+	//Set old green pic to red now that isn't current
+	if(marker!=null){
+		marker.setIcon(pinImage);
+		marker.setZIndex(0);
+	}
 				
-			//creates 
-			pinImage = createPinImage("44DD22");	
-    
-			marker = new google.maps.Marker({
-   		 position: position,
-   		 map: map,
-   	    title:"Hello World!",
-   	    icon: pinImage
-			});
-			
-			markers.push(marker);
-			marker.setZIndex(100);
-			updateLocationInfo(position);
+	//creates 
+	pinImage = createPinImage("44DD22");	
+ 
+	marker = new google.maps.Marker({
+		position: position,
+		map: map,
+	   title:"Hello World!",
+	   icon: pinImage
+	});
 		
-	 currentImage++;
+	markers.push(marker);
+	marker.setZIndex(100);
+	updateLocationInfo(position);
+		
+	currentImage++;
 }
 
 function createPinImage(color){
@@ -188,8 +180,4 @@ function createPinImage(color){
   	return pinImage;	
 	
 }
-
-
-   
-   
    
