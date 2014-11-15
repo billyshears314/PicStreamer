@@ -1,10 +1,10 @@
 <center><h1>Pic Streamer</h1></center>
 
 <div id="topbar" style="margin-bottom:20px;margin-left:10px">
-	<input type="textfield" id="searchfield" style="color: #000"></input>
-	<button id="button" style="color: #000">Stream</button>
+<input type="textfield" id="searchfield" style="color: #000"></input>
+<button id="button" style="color: #000">Stream</button>
 
-	<button id="pauseplay" style="color: #000">Pause</button>
+<button id="pauseplay" style="color: #000">Pause</button>
 </div>
 
 <!--
