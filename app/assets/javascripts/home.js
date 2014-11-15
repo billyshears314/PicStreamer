@@ -50,6 +50,7 @@ $(function(){
 			playStream();
 		}
 	});
+
 	
 });
 
@@ -154,13 +155,22 @@ function nextImage(){
 	if(currentImage>0){
 
 		$('#pic-body').prepend("<img id='"+totalImageCount+"'class='pic' src='"+
-		images[currentImage-1].images.standard_resolution.url+"'></img>");			
+		images[currentImage-1].images.standard_resolution.url+"'></img>");	
+		
+		$('.pic').css('cursor', 'pointer');		
 			
 		$('.pic').click(function(){
 			pauseStream();
 			var index = parseInt($(this).attr('id'));
 			switchMarker(totalImages[index-1]);
 			loadCurrentImage(totalImages[index-1]);
+			/*
+			$('#topbar').ScrollTo({
+   			duration: 1000,
+    			easing: 'linear'
+			});
+			*/
+
 		});			
 			
 		totalImages.push(images[currentImage-1]);
@@ -276,12 +286,25 @@ function switchMarker(image){
 	  // title:"Hello World!",
 	   icon: pinImage
 	});
+
+	//google.maps.event.addDomListener(window, 'load', markerListen);
 		
 	markers.push(marker);
 	marker.setZIndex(100);
 	updateLocationInfo(position);
 
 }
+/*
+function markerListen(){
+
+	google.maps.event.addListener(marker, 'click', function() {
+    map.setZoom(8);
+    map.setCenter(marker.getPosition());
+    console.log('test');
+  });	
+	
+}
+*/
 
 function loadCurrentImage(image){
 	
