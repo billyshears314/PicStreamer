@@ -192,7 +192,7 @@ function nextImage(){
 		if(lastImages.length>0){
 
 			$('#pic-body').prepend("<img id='"+totalImageCount+"'class='pic' src='"+
-			lastImages[lastImages.length-2].images.standard_resolution.url+"'></img>"+"LAST IMAGE");				
+			lastImages[lastImages.length-2].images.standard_resolution.url+"'></img>");				
 
 			totalImages.push(lastImages[lastImages.length-2]);
 			totalImageCount++;	
