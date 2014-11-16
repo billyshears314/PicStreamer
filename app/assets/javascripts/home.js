@@ -9,6 +9,7 @@ var images = [];
 var currentImage = 0;
 var totalImageCount = 0;
 var lastImages = [];
+var transition = false;
 
 var totalImages = [];
 
@@ -25,7 +26,7 @@ $(function(){
 		clearInterval(lastIntervalStream);
 		images = [];
 		currentImage = 0;
-		totalImageCount = 0;
+		//totalImageCount = 0;
 		$('#pic-body').html(""); 
 	
 		deleteMarkers();	
@@ -50,12 +51,17 @@ $(function(){
 			playStream();
 		}
 	});
-
+	
+	$('#info').click(function(){
+		console.log(JSON.stringify(totalImages));
+	});
 	
 });
 
 
 function requestImages(){
+
+	console.log('new request');
 
 	$.ajax({
    	url: "/update",
@@ -132,11 +138,11 @@ function newRequest(){
 	
 	clearInterval(lastIntervalStream);
 	lastImages = images;
+	console.log("image array cleared");
 	images = [];
 	currentImage = 0;
 	
 	requestImages(nextImage);
-	
 }
 
 
@@ -150,7 +156,12 @@ function nextImage(){
 	$('#current-pic').html('');
 	$('#current-pic-link').attr('href', ''+images[currentImage].link);
 	var currentPic = document.getElementById('current-pic');
-	currentPic.appendChild(preloadImage);					
+	currentPic.appendChild(preloadImage);		
+	
+	if(transition === true){
+		
+	}
+	else{		
 	
 	if(currentImage>0){
 
@@ -162,8 +173,9 @@ function nextImage(){
 		$('.pic').click(function(){
 			pauseStream();
 			var index = parseInt($(this).attr('id'));
-			switchMarker(totalImages[index-1]);
-			loadCurrentImage(totalImages[index-1]);
+			console.log(index);
+			switchMarker(totalImages[index]);
+			loadCurrentImage(totalImages[index]);
 			/*
 			$('#topbar').ScrollTo({
    			duration: 1000,
@@ -172,46 +184,29 @@ function nextImage(){
 			*/
 
 		});			
-			
+
 		totalImages.push(images[currentImage-1]);
-	}		
+		totalImageCount++;
+	}
+	else{
+		if(lastImages.length>0){
+
+			$('#pic-body').prepend("<img id='"+totalImageCount+"'class='pic' src='"+
+			lastImages[lastImages.length-2].images.standard_resolution.url+"'></img>"+"LAST IMAGE");				
+
+			totalImages.push(lastImages[lastImages.length-2]);
+			totalImageCount++;	
+		}
+
+	}
+	
+	}
+
 	
 	createMarker(images[currentImage]);
 	
-	//MAP STUFF	
-	/*
-	var position = {
-		lat: images[currentImage].location.latitude, 
-		lng: images[currentImage].location.longitude
-	};		
-			
-	map.panTo(position);
-
-	//creates red pin image
-	var pinImage = createPinImage("FE7569");
-			
-	//Set old green pic to red now that isn't current
-	if(marker!=null){
-		marker.setIcon(pinImage);
-		marker.setZIndex(0);
-	}
-				
-	//creates 
-	pinImage = createPinImage("44DD22");	
- 
-	marker = new google.maps.Marker({
-		position: position,
-		map: map,
-	  // title:"Hello World!",
-	   icon: pinImage
-	});
-		
-	markers.push(marker);
-	marker.setZIndex(100);
-	updateLocationInfo(position);
-	*/	
 	currentImage++;
-	totalImageCount++;
+	
 }
 
 function createPinImage(color){
