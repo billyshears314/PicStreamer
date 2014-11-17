@@ -12,12 +12,21 @@ var lastImages = [];
 var transition = false;
 
 var totalImages = [];
+var speed = 3500;
 
 var pause = false;
 
 $(function(){
-
+	
+	var speeds = ["Slow", "", "Med", "", "Fast"];	
+	
+	var $slider2 = $("#slider2").slider({ max: 4, value: 2});
+	
+	$slider2.slider("pips", {rest: "label", labels: speeds});	
+	
 	$('#pauseplay').hide();	
+	
+	$('#searchFor').html('&nbsp;');	
 	
 	$("#button").click(function() {
 
@@ -35,8 +44,6 @@ $(function(){
 		$('#searchfield').val('');		  	
 		
 		$('#searchFor').html('Searching #'+searchValue);
-		  	
-		$('#tagName').html(""+searchValue); 
 		
 		requestImages();		
 	 
@@ -49,6 +56,31 @@ $(function(){
 		}
 		else{
 			playStream();
+		}
+	});
+	
+	$( "#slider2" ).slider({
+		change: function( event, ui ) {
+			console.log("CHANGE");
+		
+			var value = $( "#slider2" ).slider( "option", "value" );
+			
+			if(value===0){
+				speed = 1500;
+			}
+			else if(value===1){
+				speed = 2500;
+			}
+			else if(value===2){
+				speed =3500;
+			}
+			else if(value===3){
+				speed = 4500;
+			}
+			else if(value===4){
+				speed = 5500;
+			}		
+			
 		}
 	});
 	
@@ -98,7 +130,7 @@ function requestImages(){
 					 	nextImage();  
 					}	
 				 
-			}, 3500);
+			}, speed);
  		}
  		
 	});
@@ -151,12 +183,14 @@ function nextImage(){
 	var preloadImage = new Image();
 	
 	preloadImage.src = ''+images[currentImage].images.standard_resolution.url;
-	preloadImage.width = "400";
+	preloadImage.width = "394";
 
 	$('#current-pic').html('');
 	$('#current-pic-link').attr('href', ''+images[currentImage].link);
 	var currentPic = document.getElementById('current-pic');
 	currentPic.appendChild(preloadImage);		
+	
+	$('#current-pic a:first-child').css('width', '200px');
 	
 	if(transition === true){
 		

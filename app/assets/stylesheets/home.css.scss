@@ -32,6 +32,19 @@ body{
 .text{
 	font-size:15px;	
 }
+#box{
+	display:inline;
+	margin-left:20px;
+	background-color: #FFF;
+}
+
+#slider2{
+	position:absolute;
+	top:75px;
+	left:340px;
+	margin-left:20px;
+	width:150px;
+}
 
 #map-canvas{ 
 	height: 400px; 
@@ -43,6 +56,16 @@ body{
 #current-pic{ 
 	height: 400px; 
 	width: 400px;
+	//border-style:solid;
+	//border-width:3px;
+	//border-radius:10px;
+}
+
+#current-pic img{
+	border-style:solid;
+	border-width:3px;
+	border-color:#000;
+	border-radius:10px;	
 }
 
 #pic-body{
@@ -62,6 +85,10 @@ body{
 	border-width: 3px;
 	border-color: #000;
 }
+
+.pic:hover {
+    border-color: #1D467D;
+} 
 
 .btn{
 	padding:4px 8px 4px 8px	

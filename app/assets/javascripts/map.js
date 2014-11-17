@@ -41,13 +41,13 @@ function updateLocationInfo(latlng){
                  }
                  else 
                  {
-           alert("address not found");
+           			$('#location-info').html('&nbsp;');
                  }
          }
           else
          {
 				console.log("FAILED!");
-				$('#location-info').html('');
+				$('#location-info').html('&nbsp;');
          }
      });
 
