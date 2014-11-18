@@ -66,19 +66,19 @@ $(function(){
 			var value = $( "#slider2" ).slider( "option", "value" );
 			
 			if(value===0){
-				speed = 1500;
+				speed = 6000;
 			}
 			else if(value===1){
-				speed = 2500;
+				speed = 4750;
 			}
 			else if(value===2){
 				speed =3500;
 			}
 			else if(value===3){
-				speed = 4500;
+				speed = 2250;
 			}
 			else if(value===4){
-				speed = 5500;
+				speed = 1000;
 			}		
 			
 		}
@@ -183,10 +183,11 @@ function nextImage(){
 	var preloadImage = new Image();
 	
 	preloadImage.src = ''+images[currentImage].images.standard_resolution.url;
-	preloadImage.width = "394";
+	preloadImage.width = "400";
 
 	$('#current-pic').html('');
 	$('#current-pic-link').attr('href', ''+images[currentImage].link);
+	$('#current-pic-link').attr('target', '_blank');
 	var currentPic = document.getElementById('current-pic');
 	currentPic.appendChild(preloadImage);		
 	
