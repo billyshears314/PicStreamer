@@ -2,4 +2,10 @@ Rails Version 4.1.6
 
 This app uses Instagram's API to receive the most current picture on Instagram that has a particular tag.  An ajax call is repeatedly made forming a nearly real time feed or stream of Instagram pictures that match the user inputed tag.
 
-*This project will soon be improved upon and extended*
+A google map is also shown that adds a green pin to the location of the current picture.  Old pictures are represented by red pins on the map.
+
+You can stop the stream at any time by pressing stop, and then hit play to resume the stream.  There is also a slider to adjust the speed of the stream, how long a pause there is between a new pic being added.
+
+You can also select an an old picture and it will pause the stream, show up large in the current picture slot, and the map will pan to its place on the map.
+
+
