@@ -1,29 +1,18 @@
 var lastIntervalStream;
-var lastUrl = "";
 var marker = null;
 var markers = [];
-var lastData = null;
 var searchValue;
-var initial= true;
-var images = [];
-var currentImage = 0;
-var totalImageCount = 0;
-var lastImages = [];
-var transition = false;
 
-var totalImages = [];
 var speed = 3500;
 
 var pause = false;
 
+var counter = 0;
+
 $(function(){
-	
-	var speeds = ["Slow", "", "Med", "", "Fast"];	
-	var $slider2 = $("#slider2").slider({ max: 4, value: 2});
-	$slider2.slider("pips", {rest: "label", labels: speeds});	
-	
-	$('#pauseplay').hide();	
-	$('#searchFor').html('&nbsp;');	
+
+	initialize();
+		
 	$("#stream_button").click(function() {
 		startStream();
 	});
@@ -61,10 +50,6 @@ $(function(){
 		}
 	});
 	
-	$('#info').click(function(){
-		console.log(JSON.stringify(totalImages));
-	});
-	
 	$("input").keyup(function(e) {
 	e.preventDefault();
 	
@@ -75,81 +60,32 @@ $(function(){
 	});
 });
 
+function initialize(){
+	
+	var speeds = ["Slow", "", "Med", "", "Fast"];	
+	var $slider2 = $("#slider2").slider({ max: 4, value: 2});
+	$slider2.slider("pips", {rest: "label", labels: speeds});	
+	
+	$('#pauseplay').hide();	
+	$('#searchFor').html('&nbsp;');
+	
+}
 
+//pauses and then plays stream again to refresh it
 function refresh(callback) {
   pauseStream();
   callback();
 } 
 
-function requestImages(){
 
-	console.log('new request');
-
-	$.ajax({
-   	url: "/update",
-   	type: 'POST',
-   	data:  {search: searchValue},
-   	success: function(data){	
-    		
-    		for(var i=data.length-1; i>=0; i--){
-
-				if(isNewUrl(data[i].images.standard_resolution.url)){
-
-					if(data[i].location!=null){
-					
-						if(data[i].location.latitude!=null){
-					/*
-							console.log("CHECK");					
-							
-							var imageUrl = data[i].images.standard_resolution.url;
-								imageExists(imageUrl, function(exists) {
-  								console.log('RESULT: url=' + imageUrl + ', exists=' + exists);
-  					
-  								if(exists===true){
-  									images.push(data[i]);
-  									console.log("PUSH");
-  								}
-  								else{
-  									console.log("Bad image url");	
-  								}
-							});
-							*/
-							images.push(data[i]);
-							
-						}
-						else{
-							console.log("location does not have latitude/longitude");
-						}
-					}    		
-				
-				}
-    			
-    		}
-			nextImage();	
-   		clearInterval(lastIntervalStream); 		    		
-    		lastIntervalStream = setInterval(function(){
-
-				if(currentImage+1 >= images.length){
-						newRequest();					
-					}
-				else{
-					 	nextImage();  
-					}	
-				 
-			}, speed);
- 		}
- 		
-	});
-
-}
-
+/*
 function imageExists(url, callback) {
   var img = new Image();
   img.onload = function() { callback(true); };
   img.onerror = function() { callback(false); };
   img.src = url;
 }
-
+*/
 function pauseStream(){
 	clearInterval(lastIntervalStream);			
 	pause = true;
@@ -159,66 +95,36 @@ function pauseStream(){
 }
 
 function playStream(){
-	//requestImages();
-	newRequest();	
+	nextImage();
+   lastIntervalStream = setInterval(function(){nextImage();}, speed);	
 	pause = false;
 	$('#pauseplay').removeClass('btn-success');
 	$('#pauseplay').addClass('btn-danger');	
 	$('#pauseplay').text('Stop');
 }
 
-function isNewUrl(url){
-
-	for(var i=0; i<lastImages.length; i++){
-	
-		if(lastImages[i].images.standard_resolution.url===url){
-			console.log("REPEAT URL");
-			return false;		
-		}	
-		
-	}
-	
-	return true;
-}
-
-function newRequest(){
-	
-	clearInterval(lastIntervalStream);
-	lastImages = images;
-	console.log("image array cleared");
-	images = [];
-	currentImage = 0;
-	
-	requestImages(nextImage);
-}
-
-
 function nextImage(){
-	console.log("PRINT");
-	console.log(JSON.stringify(images[currentImage]));
 	
+	console.log(JSON.stringify(imageList[counter]));
+
 	var preloadImage = new Image();
-	console.log("Current Image: " + currentImage);
-	preloadImage.src = ''+images[currentImage].images.standard_resolution.url;
+	console.log("Current Image: " + counter);
+	preloadImage.src = ''+imageList[counter].images.standard_resolution.url;
 	preloadImage.width = "400";
 
 	$('#current-pic').html('');
-	$('#current-pic-link').attr('href', ''+images[currentImage].link);
+	$('#current-pic-link').attr('href', ''+imageList[counter].link);
 	$('#current-pic-link').attr('target', '_blank');
 	var currentPic = document.getElementById('current-pic');
 	currentPic.appendChild(preloadImage);		
 	
 	$('#current-pic a:first-child').css('width', '200px');
 	
-	if(transition === true){
-		
-	}
-	else{		
 	
-	if(currentImage>0){
+	if(counter>0){
 
-		$('#pic-body').prepend("<div class='pic_container'> <img id='"+totalImageCount+"'class='pic' src='"+
-		images[currentImage-1].images.standard_resolution.url+"'></img> </div>");	
+		$('#pic-body').prepend("<div class='pic_container'> <img id='"+(counter-1)+"'class='pic' src='"+
+		imageList[counter-1].images.standard_resolution.url+"'></img> </div>");	
 		
 		$('.pic').css('cursor', 'pointer');		
 			
@@ -229,124 +135,23 @@ function nextImage(){
 			pauseStream();
 			var index = parseInt($(this).attr('id'));
 			console.log(index);
-			switchMarker(totalImages[index]);
-			loadCurrentImage(totalImages[index]);
+			switchMarker(imageList[index]);
+			loadCurrentImage(imageList[index]);
 		});			
 
-		totalImages.push(images[currentImage-1]);
-		totalImageCount++;
 	}
-	else{
-		if(lastImages.length>1){
-
-			$('#pic-body').prepend("<img id='"+totalImageCount+"'class='pic' src='"+
-			lastImages[lastImages.length-2].images.standard_resolution.url+"'></img>");				
-
-			totalImages.push(lastImages[lastImages.length-2]);
-			totalImageCount++;	
-		}
-
-	}
-	
-	}
-
-	createMarker(images[currentImage]);
-	
-	currentImage++;
-	
-}
-
-function createPinImage(color){
-	
-	var pinColor = color;
- 	var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
- 	new google.maps.Size(21, 34),
- 	new google.maps.Point(0,0),
-  	new google.maps.Point(10, 34));	
-  	
-  	return pinImage;	
-	
-}
-
-
-function createMarker(image){
-
-	//creates red pin image
-	var pinImage = createPinImage("FE7569");
-			
-	//Set old green pic to red now that isn't current
-	if(marker!=null){
-		marker.setIcon(pinImage);
-		marker.setZIndex(0);
-	}
-	
-	var position = {
-		lat: image.location.latitude, 
-		lng: image.location.longitude
-	};		
-			
-	map.panTo(position);
-				
-	//creates 
-	pinImage = createPinImage("44DD22");	
- 
-	marker = new google.maps.Marker({
-		position: position,
-		map: map,
-	  // title:"Hello World!",
-	   icon: pinImage
-	});
 		
-	markers.push(marker);
-	marker.setZIndex(100);
-	updateLocationInfo(position);
-
-}
-
-function switchMarker(image){
+	createMarker(imageList[counter]);
+	counter++;	
 	
-	//creates red pin image
-	var pinImage = createPinImage("FE7569");
-			
-	//Set old green pic to red now that isn't current
-		marker.setIcon(pinImage);
-		marker.setZIndex(0);
-	
-	var position = {
-		lat: image.location.latitude, 
-		lng: image.location.longitude
-	};		
-			
-	map.panTo(position);
-				
-	//creates 
-	pinImage = createPinImage("44DD22");	
- 
-	marker = new google.maps.Marker({
-		position: position,
-		map: map,
-	  // title:"Hello World!",
-	   icon: pinImage
-	});
-
-	//google.maps.event.addDomListener(window, 'load', markerListen);
-		
-	markers.push(marker);
-	marker.setZIndex(100);
-	updateLocationInfo(position);
-
-}
-/*
-function markerListen(){
-
-	google.maps.event.addListener(marker, 'click', function() {
-    map.setZoom(8);
-    map.setCenter(marker.getPosition());
-    console.log('test');
-  });	
+	if(counter >= imageList.length - 3){
+		console.log("COUNTER WAS: " + counter);
+		console.log("Total Images Length: " + imageList.length);
+		//clearInterval(lastIntervalStream);
+		requestImages();	
+	}
 	
 }
-*/
 
 function loadCurrentImage(image){
 	
@@ -368,9 +173,10 @@ function startStream(){
 	$('#pauseplay').show();				  
 	  
 	clearInterval(lastIntervalStream);
-	images = [];
+	//images = [];
 	currentImage = 0;
-	//totalImageCount = 0;
+	counter = 0;
+	imageList = [];
 	$('#pic-body').html(""); 
 
 	deleteMarkers();	
@@ -379,9 +185,7 @@ function startStream(){
 	$('#searchfield').val('');		  	
 	
 	$('#searchFor').html('Searching #'+searchValue);
-	
-	requestImages();	
+			
+	requestImages();
+		
 }
-
-
-   
