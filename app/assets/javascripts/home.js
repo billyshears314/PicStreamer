@@ -19,34 +19,13 @@ var pause = false;
 $(function(){
 	
 	var speeds = ["Slow", "", "Med", "", "Fast"];	
-	
 	var $slider2 = $("#slider2").slider({ max: 4, value: 2});
-	
 	$slider2.slider("pips", {rest: "label", labels: speeds});	
 	
 	$('#pauseplay').hide();	
-	
 	$('#searchFor').html('&nbsp;');	
-	
-	$("#button").click(function() {
-
-		$('#pauseplay').show();				  
-		  
-		clearInterval(lastIntervalStream);
-		images = [];
-		currentImage = 0;
-		//totalImageCount = 0;
-		$('#pic-body').html(""); 
-	
-		deleteMarkers();	
-
-		searchValue = $('#searchfield').val();
-		$('#searchfield').val('');		  	
-		
-		$('#searchFor').html('Searching #'+searchValue);
-		
-		requestImages();		
-	 
+	$("#stream_button").click(function() {
+		startStream();
 	});
 	
 	$('#pauseplay').click(function(){
@@ -61,8 +40,6 @@ $(function(){
 	
 	$( "#slider2" ).slider({
 		change: function( event, ui ) {
-			console.log("CHANGE");
-		
 			var value = $( "#slider2" ).slider( "option", "value" );
 			
 			if(value===0){
@@ -80,7 +57,7 @@ $(function(){
 			else if(value===4){
 				speed = 1000;
 			}		
-			
+			refresh(playStream);
 		}
 	});
 	
@@ -88,8 +65,21 @@ $(function(){
 		console.log(JSON.stringify(totalImages));
 	});
 	
+	$("input").keyup(function(e) {
+	e.preventDefault();
+	
+	if(e.keyCode == 13) {
+		startStream();	
+  	}
+  	
+	});
 });
 
+
+function refresh(callback) {
+  pauseStream();
+  callback();
+} 
 
 function requestImages(){
 
@@ -101,14 +91,31 @@ function requestImages(){
    	data:  {search: searchValue},
    	success: function(data){	
     		
-    		for(var i=0; i<data.length; i++){
+    		for(var i=data.length-1; i>=0; i--){
 
 				if(isNewUrl(data[i].images.standard_resolution.url)){
 
 					if(data[i].location!=null){
 					
 						if(data[i].location.latitude!=null){
-							images.push(data[i]);	
+					/*
+							console.log("CHECK");					
+							
+							var imageUrl = data[i].images.standard_resolution.url;
+								imageExists(imageUrl, function(exists) {
+  								console.log('RESULT: url=' + imageUrl + ', exists=' + exists);
+  					
+  								if(exists===true){
+  									images.push(data[i]);
+  									console.log("PUSH");
+  								}
+  								else{
+  									console.log("Bad image url");	
+  								}
+							});
+							*/
+							images.push(data[i]);
+							
 						}
 						else{
 							console.log("location does not have latitude/longitude");
@@ -118,9 +125,8 @@ function requestImages(){
 				}
     			
     		}
-	
-			nextImage();		
-    		    		
+			nextImage();	
+   		clearInterval(lastIntervalStream); 		    		
     		lastIntervalStream = setInterval(function(){
 
 				if(currentImage+1 >= images.length){
@@ -137,6 +143,13 @@ function requestImages(){
 
 }
 
+function imageExists(url, callback) {
+  var img = new Image();
+  img.onload = function() { callback(true); };
+  img.onerror = function() { callback(false); };
+  img.src = url;
+}
+
 function pauseStream(){
 	clearInterval(lastIntervalStream);			
 	pause = true;
@@ -146,7 +159,8 @@ function pauseStream(){
 }
 
 function playStream(){
-	requestImages();
+	//requestImages();
+	newRequest();	
 	pause = false;
 	$('#pauseplay').removeClass('btn-success');
 	$('#pauseplay').addClass('btn-danger');	
@@ -158,6 +172,7 @@ function isNewUrl(url){
 	for(var i=0; i<lastImages.length; i++){
 	
 		if(lastImages[i].images.standard_resolution.url===url){
+			console.log("REPEAT URL");
 			return false;		
 		}	
 		
@@ -179,9 +194,11 @@ function newRequest(){
 
 
 function nextImage(){
+	console.log("PRINT");
+	console.log(JSON.stringify(images[currentImage]));
 	
 	var preloadImage = new Image();
-	
+	console.log("Current Image: " + currentImage);
 	preloadImage.src = ''+images[currentImage].images.standard_resolution.url;
 	preloadImage.width = "400";
 
@@ -200,31 +217,27 @@ function nextImage(){
 	
 	if(currentImage>0){
 
-		$('#pic-body').prepend("<img id='"+totalImageCount+"'class='pic' src='"+
-		images[currentImage-1].images.standard_resolution.url+"'></img>");	
+		$('#pic-body').prepend("<div class='pic_container'> <img id='"+totalImageCount+"'class='pic' src='"+
+		images[currentImage-1].images.standard_resolution.url+"'></img> </div>");	
 		
 		$('.pic').css('cursor', 'pointer');		
 			
 		$('.pic').click(function(){
+			
+			//scrolls to the top of the page
+			$( 'html:not(:animated),body:not(:animated)' ).animate( { scrollTop: $('body').offset().top}, 800);
 			pauseStream();
 			var index = parseInt($(this).attr('id'));
 			console.log(index);
 			switchMarker(totalImages[index]);
 			loadCurrentImage(totalImages[index]);
-			/*
-			$('#topbar').ScrollTo({
-   			duration: 1000,
-    			easing: 'linear'
-			});
-			*/
-
 		});			
 
 		totalImages.push(images[currentImage-1]);
 		totalImageCount++;
 	}
 	else{
-		if(lastImages.length>0){
+		if(lastImages.length>1){
 
 			$('#pic-body').prepend("<img id='"+totalImageCount+"'class='pic' src='"+
 			lastImages[lastImages.length-2].images.standard_resolution.url+"'></img>");				
@@ -237,7 +250,6 @@ function nextImage(){
 	
 	}
 
-	
 	createMarker(images[currentImage]);
 	
 	currentImage++;
@@ -349,4 +361,27 @@ function loadCurrentImage(image){
 	currentPic.appendChild(preloadImage);
 	
 }
+
+//Clears variables and begins a new stream of pictures
+function startStream(){
+	
+	$('#pauseplay').show();				  
+	  
+	clearInterval(lastIntervalStream);
+	images = [];
+	currentImage = 0;
+	//totalImageCount = 0;
+	$('#pic-body').html(""); 
+
+	deleteMarkers();	
+
+	searchValue = $('#searchfield').val();
+	$('#searchfield').val('');		  	
+	
+	$('#searchFor').html('Searching #'+searchValue);
+	
+	requestImages();	
+}
+
+
    
