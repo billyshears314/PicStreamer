@@ -11,7 +11,13 @@ html, body{
 }
 
 body{
-	background-color: #101B1B;		
+	background-color: #101B1B;	
+	padding-bottom:50px;	
+}
+
+#whole_body{
+	overflow: hidden;
+	padding-bottom:4em;	
 }
 
 #topbar{
@@ -30,6 +36,7 @@ body{
 .text{
 	font-size:15px;	
 }
+
 #box{
 	display:inline;
 	margin-left:20px;
