@@ -1,4 +1,5 @@
 var imageList = [];
+var imagesAdded = false;
 
 function requestImages(){
 
@@ -35,7 +36,7 @@ function requestImages(){
 							*/
 							//images.push(data[i]);
 							imageList.push(data[i]);
-							
+							imagesAdded = true;
 						}
 						else{
 							console.log("location does not have latitude/longitude");
@@ -46,10 +47,29 @@ function requestImages(){
     			
     		}
     		
-    		if(counter===0){
-    			nextImage();
-    			lastIntervalStream = setInterval(function(){nextImage();}, speed);	
+    		
+    		
+			if(imagesAdded===true){    		
+    		
+					if(counter===0){
+						nextImage();	
+					}    		
+    		
+	    		//if(counter===0){
+	    			clearInterval(lastIntervalStream);
+	    			//nextImage();
+	    			lastIntervalStream = setInterval(function(){nextImage();}, speed);	
+	    		//}
+    		
     		}
+    		else{
+    			imagesAdded = false;
+				clearInterval(lastIntervalStream);			
+    			console.log("No new images to stream");
+ 				setTimeout(function(){requestImages()}, 5000);
+    		}
+    		
+    		imagesAdded = false;
     		
  		}
  		
@@ -59,15 +79,15 @@ function requestImages(){
 
 
 function isNewUrl(url){
-/*
-	for(var i=0; i<lastImages.length; i++){
+
+	for(var i=0; i<imageList.length; i++){
 	
-		if(lastImages[i].images.standard_resolution.url===url){
+		if(imageList[i].images.standard_resolution.url===url){
 			console.log("REPEAT URL");
 			return false;		
 		}	
 		
 	}
-	*/
+	
 	return true;
 }

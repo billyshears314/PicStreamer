@@ -104,8 +104,6 @@ function playStream(){
 }
 
 function nextImage(){
-	
-	console.log(JSON.stringify(imageList[counter]));
 
 	var preloadImage = new Image();
 	console.log("Current Image: " + counter);
