@@ -18,25 +18,38 @@ function requestImages(){
 					if(data[i].location!=null){
 					
 						if(data[i].location.latitude!=null){
-					/*
-							console.log("CHECK");					
 							
+							/*
+							$.get(data[i].images.standard_resolution.url)
+							.done(function(){
+								imageList.push(data[i]);
+								imagesAdded = true;				
+							}).fail(function(){
+								console.log("Bad image url");
+							})
+							*/					
+							
+					
+							//console.log("CHECK");					
+							//console.log(JSON.stringify(data[i]));
 							var imageUrl = data[i].images.standard_resolution.url;
-								imageExists(imageUrl, function(exists) {
-  								console.log('RESULT: url=' + imageUrl + ', exists=' + exists);
+								 imageExists(imageUrl, data, function(data, exists) {
+  								//console.log('RESULT: url=' + imageUrl + ', exists=' + exists);
   					
   								if(exists===true){
-  									images.push(data[i]);
-  									console.log("PUSH");
+  									//console.log(JSON.stringify(data[i]));
+  									//imageList.push(data[i]);
+  									//imagesAdded = true;
+  									//console.log("PUSH");
   								}
   								else{
   									console.log("Bad image url");	
   								}
 							});
-							*/
+							
 							//images.push(data[i]);
 							imageList.push(data[i]);
-							imagesAdded = true;
+							imagesAdded = true;	
 						}
 						else{
 							console.log("location does not have latitude/longitude");
@@ -77,17 +90,27 @@ function requestImages(){
 
 }
 
+function imageExists(url, data, callback) {
+  var img = new Image();
+  img.onload = function() { callback(data, true); };
+  img.onerror = function() { callback(data, false); };
+  img.src = url;
+}
 
 function isNewUrl(url){
 
+	if(imageList.length>0){
+
 	for(var i=0; i<imageList.length; i++){
-	
+		//console.log(JSON.stringify(imageList));	
 		if(imageList[i].images.standard_resolution.url===url){
 			console.log("REPEAT URL");
 			return false;		
 		}	
 		
 	}
+
+	}	
 	
 	return true;
 }
