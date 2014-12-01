@@ -169,7 +169,7 @@ function loadCurrentImage(image){
 function startStream(){
 	
 	$('#pauseplay').show();				  
-	  
+		  
 	clearInterval(lastIntervalStream);
 	//images = [];
 	currentImage = 0;
@@ -183,7 +183,12 @@ function startStream(){
 	$('#searchfield').val('');		  	
 	
 	$('#searchFor').html('Searching #'+searchValue);
-			
+	
+//	pause = false;
+	$('#pauseplay').removeClass('btn-success');
+	$('#pauseplay').addClass('btn-danger');	
+	$('#pauseplay').text('Stop');	
 	requestImages();
-		
+	
 }
+
