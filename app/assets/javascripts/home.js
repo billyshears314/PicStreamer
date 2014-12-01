@@ -108,7 +108,7 @@ function nextImage(){
 	var preloadImage = new Image();
 	console.log("Current Image: " + counter);
 	preloadImage.src = ''+imageList[counter].images.standard_resolution.url;
-	preloadImage.width = "400";
+	preloadImage.width = "350";
 
 	$('#current-pic').html('');
 	$('#current-pic-link').attr('href', ''+imageList[counter].link);
@@ -116,7 +116,7 @@ function nextImage(){
 	var currentPic = document.getElementById('current-pic');
 	currentPic.appendChild(preloadImage);		
 	
-	$('#current-pic a:first-child').css('width', '200px');
+	$('#current-pic a:first-child').css('width', '175px');
 	
 	
 	if(counter>0){
@@ -156,7 +156,7 @@ function loadCurrentImage(image){
 	var preloadImage = new Image();
 	
 	preloadImage.src = ''+image.images.standard_resolution.url;
-	preloadImage.width = "400";
+	preloadImage.width = "350";
 
 	$('#current-pic').html('');
 	$('#current-pic-link').attr('href', ''+image.link);
