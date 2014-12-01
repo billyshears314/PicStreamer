@@ -180,11 +180,15 @@ function startStream(){
 	deleteMarkers();	
 
 	searchValue = $('#searchfield').val();
+
+	if(searchValue.charAt(0)==='#'){
+		searchValue = searchValue.substring(1);	
+	}	
+	
 	$('#searchfield').val('');		  	
 	
 	$('#searchFor').html('Searching #'+searchValue);
 	
-//	pause = false;
 	$('#pauseplay').removeClass('btn-success');
 	$('#pauseplay').addClass('btn-danger');	
 	$('#pauseplay').text('Stop');	
