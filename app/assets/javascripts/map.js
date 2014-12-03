@@ -36,7 +36,16 @@ function updateLocationInfo(latlng){
                      state=value[count-2];
                      city=value[count-3];
                      
+                     var a = 'test';
+							a = city + ', ' + country;                  
+
+							if(a.length > 40){							
+								a = a.substring(0, 40);
+								a = a + '...';      
+							}               
+                     
 							$('#location-info').html(city + ', '+country);
+							$('#location-info').html(a);
                  }
                  else 
                  {
