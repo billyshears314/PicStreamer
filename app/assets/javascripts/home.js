@@ -4,9 +4,7 @@ var markers = [];
 var searchValue;
 
 var speed = 3500;
-
 var pause = false;
-
 var counter = 0;
 
 $(function(){
@@ -15,6 +13,7 @@ $(function(){
 		
 	$("#stream_button").click(function() {
 		startStream();
+		console.log(pause);
 	});
 	
 	$('#pauseplay').click(function(){
@@ -25,6 +24,8 @@ $(function(){
 		else{
 			playStream();
 		}
+		
+		console.log(pause);
 	});
 	
 	$( "#slider2" ).slider({
@@ -171,7 +172,6 @@ function startStream(){
 	$('#pauseplay').show();				  
 		  
 	clearInterval(lastIntervalStream);
-	//images = [];
 	currentImage = 0;
 	counter = 0;
 	imageList = [];
@@ -188,7 +188,8 @@ function startStream(){
 	$('#searchfield').val('');		  	
 	
 	$('#searchFor').html('Searching #'+searchValue);
-	
+
+	pause = false;	
 	$('#pauseplay').removeClass('btn-success');
 	$('#pauseplay').addClass('btn-danger');	
 	$('#pauseplay').text('Stop');	
