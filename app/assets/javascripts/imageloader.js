@@ -3,7 +3,7 @@ var imagesAdded = false;
 
 function requestImages(){
 
-	console.log('new request');
+	console.log('new ajax request to server');
 
 	$.ajax({
    	url: "/update",
@@ -17,37 +17,19 @@ function requestImages(){
 
 					if(data[i].location!=null){
 					
-						if(data[i].location.latitude!=null){
-							
-							/*
-							$.get(data[i].images.standard_resolution.url)
-							.done(function(){
-								imageList.push(data[i]);
-								imagesAdded = true;				
-							}).fail(function(){
-								console.log("Bad image url");
-							})
-							*/					
-							
-					
-							//console.log("CHECK");					
-							//console.log(JSON.stringify(data[i]));
+						if(data[i].location.latitude!=null){				
+
 							var imageUrl = data[i].images.standard_resolution.url;
 								 imageExists(imageUrl, data, function(data, exists) {
-  								//console.log('RESULT: url=' + imageUrl + ', exists=' + exists);
   					
   								if(exists===true){
-  									//console.log(JSON.stringify(data[i]));
-  									//imageList.push(data[i]);
-  									//imagesAdded = true;
-  									//console.log("PUSH");
+
   								}
   								else{
   									console.log("Bad image url");	
   								}
 							});
-							
-							//images.push(data[i]);
+
 							imageList.push(data[i]);
 							imagesAdded = true;	
 						}
@@ -61,18 +43,15 @@ function requestImages(){
     		}
     		
     		
-    		
 			if(imagesAdded===true){    		
     		
 					if(counter===0){
 						nextImage();	
 					}    		
     		
-	    		//if(counter===0){
 	    			clearInterval(lastIntervalStream);
-	    			//nextImage();
+	    			
 	    			lastIntervalStream = setInterval(function(){nextImage();}, speed);	
-	    		//}
     		
     		}
     		else{
@@ -97,6 +76,7 @@ function imageExists(url, data, callback) {
   img.src = url;
 }
 
+//Checks to see if pic is new
 function isNewUrl(url){
 
 	if(imageList.length>0){

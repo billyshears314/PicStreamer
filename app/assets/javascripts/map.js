@@ -19,11 +19,10 @@ $(document).ready(function () {
 function updateLocationInfo(latlng){
 	
     geocoder = new google.maps.Geocoder();
-    //var latlng = new google.maps.LatLng(-34.397, 150.644);
     
     geocoder.geocode({'latLng': latlng}, function(results, status)
      {
-         //alert("Else loop1");
+
          if (status == google.maps.GeocoderStatus.OK)
           {
                  if (results[0])
@@ -112,7 +111,6 @@ function createMarker(image){
 	marker = new google.maps.Marker({
 		position: position,
 		map: map,
-	  // title:"Hello World!",
 	   icon: pinImage
 	});
 		
@@ -137,18 +135,14 @@ function switchMarker(image){
 	};		
 			
 	map.panTo(position);
-				
-	//creates 
+
 	pinImage = createPinImage("44DD22");	
  
 	marker = new google.maps.Marker({
 		position: position,
 		map: map,
-	  // title:"Hello World!",
 	   icon: pinImage
 	});
-
-	//google.maps.event.addDomListener(window, 'load', markerListen);
 		
 	markers.push(marker);
 	marker.setZIndex(100);
